@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            width: 300px;
+            padding: 10px;
+            font-family: 'Arial', sans-serif;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        #inputContainer {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        #inputData {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 10px;
+            border: none;
+            background-color: #4caf50;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="inputContainer">
+        <input type="text" id="inputData" placeholder="Enter data">
+        <button onclick="addData()">Add</button>
+    </div>
+
+    <table id="dataTable">
+        <tr>
+            <th>Name</th>
+            <th>Action</th>
+        </tr>
+    </table>
+
+    <script>
+        window.onload = function () {
+            addDefaultData();
+        };
+
+        function addDefaultData() {
+            var table = document.getElementById("dataTable");
+            var row = table.insertRow(-1);
+
+            var nameCell = row.insertCell(0);
+            nameCell.innerHTML = "Regular";
+
+            var actionCell = row.insertCell(1);
+            actionCell.innerHTML = '<button onclick="loadData()">Load</button>' +
+                '<button onclick="renameData(this)">Rename</button>';
+        }
+
+        function isDuplicateName(name) {
+            var table = document.getElementById("dataTable");
+            for (var i = 1; i < table.rows.length; i++) {
+                var existingName = table.rows[i].cells[0].innerText.trim().toLowerCase();
+                if (name.trim().toLowerCase() === existingName) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function addData() {
+            var inputData = document.getElementById("inputData").value;
+
+            // Validate name length
+            if (inputData.trim().length < 3 || inputData.trim().length > 9) {
+                alert('Name should be between 3 and 9 characters.');
+                return;
+            }
+
+            // Check for duplicate name
+            if (isDuplicateName(inputData)) {
+                alert('Name must be unique.');
+                return;
+            }
+
+            var table = document.getElementById("dataTable");
+            var row = table.insertRow(-1);
+
+            var nameCell = row.insertCell(0);
+            nameCell.innerHTML = inputData;
+
+            var actionCell = row.insertCell(1);
+            actionCell.innerHTML = '<button onclick="loadData()">Load</button>' +
+                '<button onclick="renameData(this)">Rename</button>' +
+                '<button onclick="deleteData(this)">Delete</button>';
+
+            document.getElementById("inputData").value = "";
+        }
+
+        function renameData(button) {
+            var row = button.parentNode.parentNode;
+            var nameCell = row.cells[0];
+            var newName = prompt("Enter new name (3-9 characters):", nameCell.innerText);
+
+            // Validate new name length
+            if (newName !== null && (newName.trim().length < 3 || newName.trim().length > 9)) {
+                alert('Name should be between 3 and 9 characters.');
+                return;
+            }
+
+            // Check for duplicate name
+            if (newName !== null && isDuplicateName(newName)) {
+                alert('Name must be unique.');
+                return;
+            }
+
+            // Update name if a valid new name is provided
+            if (newName !== null) {
+                nameCell.innerHTML = newName;
+            }
+        }
+
+        function deleteData(button) {
+            var row = button.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+        }
+
+        function loadData() {
+            alert('Load action triggered.');
+        }
+    </script>
+</body>
+
+</html>
