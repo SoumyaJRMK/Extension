@@ -1,159 +1,77 @@
 <!DOCTYPE html>
-<html>
-
-<head>
-    <style>
-        body {
-            width: 300px;
-            padding: 10px;
-            font-family: 'Arial', sans-serif;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        #inputContainer {
-            display: flex;
-            margin-bottom: 10px;
-        }
-
-        #inputData {
-            flex-grow: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            margin-right: 10px;
-        }
-
-        button {
-            padding: 10px;
-            border: none;
-            background-color: #4caf50;
-            color: white;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-    </style>
-</head>
-
-<body>
-    <div id="inputContainer">
-        <input type="text" id="inputData" placeholder="Enter data">
-        <button onclick="addData()">Add</button>
-    </div>
-
-    <table id="dataTable">
-        <tr>
-            <th>Name</th>
-            <th>Action</th>
-        </tr>
-    </table>
-
-    <script>
-        window.onload = function () {
-            addDefaultData();
-        };
-
-        function addDefaultData() {
-            var table = document.getElementById("dataTable");
-            var row = table.insertRow(-1);
-
-            var nameCell = row.insertCell(0);
-            nameCell.innerHTML = "Regular";
-
-            var actionCell = row.insertCell(1);
-            actionCell.innerHTML = '<button onclick="loadData()">Load</button>' +
-                '<button onclick="renameData(this)">Rename</button>';
-        }
-
-        function isDuplicateName(name) {
-            var table = document.getElementById("dataTable");
-            for (var i = 1; i < table.rows.length; i++) {
-                var existingName = table.rows[i].cells[0].innerText.trim().toLowerCase();
-                if (name.trim().toLowerCase() === existingName) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        function addData() {
-            var inputData = document.getElementById("inputData").value;
-
-            // Validate name length
-            if (inputData.trim().length < 3 || inputData.trim().length > 9) {
-                alert('Name should be between 3 and 9 characters.');
-                return;
-            }
-
-            // Check for duplicate name
-            if (isDuplicateName(inputData)) {
-                alert('Name must be unique.');
-                return;
-            }
-
-            var table = document.getElementById("dataTable");
-            var row = table.insertRow(-1);
-
-            var nameCell = row.insertCell(0);
-            nameCell.innerHTML = inputData;
-
-            var actionCell = row.insertCell(1);
-            actionCell.innerHTML = '<button onclick="loadData()">Load</button>' +
-                '<button onclick="renameData(this)">Rename</button>' +
-                '<button onclick="deleteData(this)">Delete</button>';
-
-            document.getElementById("inputData").value = "";
-        }
-
-        function renameData(button) {
-            var row = button.parentNode.parentNode;
-            var nameCell = row.cells[0];
-            var newName = prompt("Enter new name (3-9 characters):", nameCell.innerText);
-
-            // Validate new name length
-            if (newName !== null && (newName.trim().length < 3 || newName.trim().length > 9)) {
-                alert('Name should be between 3 and 9 characters.');
-                return;
-            }
-
-            // Check for duplicate name
-            if (newName !== null && isDuplicateName(newName)) {
-                alert('Name must be unique.');
-                return;
-            }
-
-            // Update name if a valid new name is provided
-            if (newName !== null) {
-                nameCell.innerHTML = newName;
-            }
-        }
-
-        function deleteData(button) {
-            var row = button.parentNode.parentNode;
-            row.parentNode.removeChild(row);
-        }
-
-        function loadData() {
-            alert('Load action triggered.');
-        }
-    </script>
-</body>
-
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Tic-Tac-Toe</title>
+      <style>
+         body {
+         overflow: hidden;
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         height: 100vh;
+         margin: 0;
+         background: linear-gradient(to right, #1e5799, #2989d8, #7db9e8);
+         }
+         .container {
+         position: relative;
+         width: 60vmin;
+         height: 60vmin;
+         margin: 15px; /* Equal margin for the border effect */
+         background: linear-gradient(to right, #1e5799, #2989d8, #7db9e8); /* Match the background gradient */
+         box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+         animation: fadeIn 0.5s ease-in-out;
+         border-radius: 15px;
+         display: flex;
+         flex-wrap: wrap;
+         box-sizing: border-box; /* Add box-sizing property */
+         user-select: none; /* Disable text selection */
+         }
+         .box {
+         flex-basis: calc(33.33% - 10px); /* Adjusted calculation for exact width */
+         box-sizing: border-box;
+         font-size: 3em;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         cursor: pointer;
+         transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, transform 0.2s ease-in-out;
+         background-color: #fff; /* White box color */
+         color: #2c3e50; /* Text color */
+         margin: 5px; /* Adjusted margin */
+         border-radius: 10px;
+         }
+         .box:hover {
+         background-color: #2980b9;
+         color: #fff;
+         transform: scale(1.05);
+         }
+         .box:active {
+         transform: scale(0.95);
+         transition: transform 0.1s ease-in-out; /* Add a subtle animation on click */
+         }
+         @keyframes fadeIn {
+         from {
+         opacity: 0;
+         }
+         to {
+         opacity: 1;
+         }
+         }
+      </style>
+   </head>
+   <body>
+      <div class="container">
+         <div class="box" id="box1" oncontextmenu="return false;"></div>
+         <div class="box" id="box2" oncontextmenu="return false;"></div>
+         <div class="box" id="box3" oncontextmenu="return false;"></div>
+         <div class="box" id="box4" oncontextmenu="return false;"></div>
+         <div class="box" id="box5" oncontextmenu="return false;"></div>
+         <div class="box" id="box6" oncontextmenu="return false;"></div>
+         <div class="box" id="box7" oncontextmenu="return false;"></div>
+         <div class="box" id="box8" oncontextmenu="return false;"></div>
+         <div class="box" id="box9" oncontextmenu="return false;"></div>
+      </div>
+   </body>
 </html>
